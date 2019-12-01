@@ -1,1 +1,3 @@
-module github.com/notedit/gstreamer-rtmp
+module github.com/wangtiga/gstrtmp
+
+go 1.13
