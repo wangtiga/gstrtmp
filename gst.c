@@ -38,6 +38,7 @@ static gboolean gst_rtmp_bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
 }
 
 GstElement *gst_rtmp_create_pipeline(char *pipeline) {
+  g_printerr("create_pipeline from ws\n");
   gst_init(NULL, NULL);
   GError *error = NULL;
   return gst_parse_launch(pipeline, &error);
@@ -60,6 +61,11 @@ void gst_rtmp_push_buffer(GstElement *pipeline, void *buffer, int mtype ,int len
   if (src != NULL) {
     gpointer p = g_memdup(buffer, len);
     GstBuffer *buffer = gst_buffer_new_wrapped(p, len);
-    gst_app_src_push_buffer(GST_APP_SRC(src), buffer);
+    GstFlowReturn ret = gst_app_src_push_buffer(GST_APP_SRC(src), buffer);
+    if (GST_FLOW_OK != ret ) {
+        g_printerr("gst_app_src_push_buffer Error: %d\n", ret);
+    } else {
+        g_printerr("gst_rtmp_push_buffer by ws\n");
+    }
   }
 }
